@@ -22,6 +22,12 @@ function wkhtmltopdf(input, options, callback) {
   var output = options.output;
   delete options.output;
 
+  var tz;
+  if (options.timezone) {
+    tz = 'TZ=' + options.timezone;
+  }
+  delete options.timezone;
+
   // make sure the special keys are last
   var extraKeys = [];
   var keys = Object.keys(options).filter(function(key) {
@@ -49,6 +55,10 @@ function wkhtmltopdf(input, options, callback) {
   }
 
   var args = [wkhtmltopdf.command, '--quiet'];
+  if (tz) {
+    args[0] = tz + ' ' + args[0];
+  }
+
   keys.forEach(function(key) {
     var val = options[key];
     if (key === 'ignore' || key === 'debug' || key === 'debugStdOut') { // skip adding the ignore/debug keys
